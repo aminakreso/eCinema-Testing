@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eCinema", "eCinema\eCinema.csproj", "{329533DD-2CD1-4841-AD95-54CF92D4EE85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eCinema", "eCinema\eCinema.csproj", "{329533DD-2CD1-4841-AD95-54CF92D4EE85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eCinema.Services", "eCinema.Services\eCinema.Services.csproj", "{13FAEC9A-92B7-4C6A-A975-BBE40059E414}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eCinema.Services", "eCinema.Services\eCinema.Services.csproj", "{13FAEC9A-92B7-4C6A-A975-BBE40059E414}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eCinema.Model", "eCinema.Model\eCinema.Model.csproj", "{A5066624-630C-4754-9CC5-FAED1C6C43FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eCinema.Model", "eCinema.Model\eCinema.Model.csproj", "{A5066624-630C-4754-9CC5-FAED1C6C43FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eCinema.WinUI", "eCinema.WinUI\eCinema.WinUI.csproj", "{B4E2EF09-C33A-4B30-AE87-6162468A8B91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eCinema.WinUI", "eCinema.WinUI\eCinema.WinUI.csproj", "{B4E2EF09-C33A-4B30-AE87-6162468A8B91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eCInema.Test", "eCInema.Test\eCInema.Test.csproj", "{A5E91C3B-4CEC-4CBF-B43E-D6A5501EDE24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{B4E2EF09-C33A-4B30-AE87-6162468A8B91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4E2EF09-C33A-4B30-AE87-6162468A8B91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4E2EF09-C33A-4B30-AE87-6162468A8B91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5E91C3B-4CEC-4CBF-B43E-D6A5501EDE24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5E91C3B-4CEC-4CBF-B43E-D6A5501EDE24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5E91C3B-4CEC-4CBF-B43E-D6A5501EDE24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5E91C3B-4CEC-4CBF-B43E-D6A5501EDE24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

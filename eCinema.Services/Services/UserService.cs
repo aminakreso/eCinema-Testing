@@ -18,9 +18,18 @@ namespace eCinema.Services.Services
 
         public override void BeforeInsert(UserInsertRequest insert, User entity)
         {
+            if (!CheckPassword(insert))
+            {
+                throw new Exception("Password didn't match!");
+            }
             var salt = GenerateSalt();
             entity.LozinkaSalt = salt;
             entity.LozinkaHash = GenerateHash(salt, insert.Password!);
+        }
+
+        private bool CheckPassword(UserInsertRequest insert)
+        {
+            return insert.Password == insert.ConfirmPassword;
         }
 
         private string GenerateHash(string salt, string password)
