@@ -5,7 +5,6 @@ namespace eCInema.Test
         [Fact]
         public void Test1()
         {
-
         }
     }
 }
