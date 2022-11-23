@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\eCinema.Services\eCinema.Services.csproj" />
+    <ProjectReference Include="..\eCinema\eCinema.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,6 +2,7 @@
 using eCinema.Model.Helpers;
 using eCinema.Model.SearchObjects;
 using eCinema.Services.Database;
+using InvalidOperationException = System.InvalidOperationException;
 
 namespace eCinema.Services.Services
 {
@@ -53,6 +54,9 @@ namespace eCinema.Services.Services
             var set = _cinemaContext.Set<TDb>();
 
             var entity = await set.FindAsync(id);
+            
+            if (entity is null)
+                throw new InvalidOperationException();
 
             IsActiveHelper<TDb>.SetIsActive(entity, false);
             

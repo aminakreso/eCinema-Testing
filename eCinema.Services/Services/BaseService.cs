@@ -39,6 +39,9 @@ namespace eCinema.Services.Services
 
             var entity = await set.FindAsync(id);
 
+            if (entity is null)
+                throw new Exception("Invalid id!");
+
             return _mapper.Map<T>(entity);
             
         }

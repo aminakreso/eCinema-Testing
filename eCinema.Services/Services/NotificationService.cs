@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using eCinema.Model.Constants;
 using eCinema.Model.Dtos;
 using eCinema.Model.Requests;
 using eCinema.Model.SearchObjects;
@@ -34,14 +35,18 @@ namespace eCinema.Services.Services
         {
             entity.AuthorId = new Guid("C25954C5-F3A1-408D-FDCD-08DAC04D3E13");
             entity.Date = DateTime.Now;
+            if (string.IsNullOrWhiteSpace(entity.Title))
+                throw new Exception("Invalid title!");
         }
 
         public override void BeforeUpdate(Notification entity)
         {
             entity.Date = DateTime.Now;
+            if (string.IsNullOrWhiteSpace(entity.NotificationType) || !NotificationTypes.ListOfNotificationTypes.Contains(entity.NotificationType))
+                throw new Exception("Unexisting notification type!");
         }
 
-        public override IQueryable<Notification> AddInclude(IQueryable<Notification> query, NotificationSearchObject search)
+        public override IQueryable<Notification> AddInclude(IQueryable<Notification> query, NotificationSearchObject? search)
         {
             if (search?.IncludeUsers is true)
             {
@@ -49,6 +54,18 @@ namespace eCinema.Services.Services
             }
 
             return query;
+        }
+
+        public override async Task<NotificationDto> Delete(Guid id)
+        {
+            var notification = await _cinemaContext.Notifications.FindAsync(id);
+            if (notification is null)
+                throw new Exception("Invalid id!");
+            
+            _cinemaContext.Remove(notification);
+            await _cinemaContext.SaveChangesAsync();
+
+            return _mapper.Map<NotificationDto>(notification);
         }
     }
 }
