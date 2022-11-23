@@ -43,7 +43,7 @@ namespace eCInema.Test.Data
             },
         };
         
-        public static readonly List<Projection> Projections = new()
+        public static readonly List<Projection> Projections = new List<Projection>()
         {
             new Projection
             {
@@ -51,8 +51,7 @@ namespace eCInema.Test.Data
                 IsActive = true,
                 Status = ProjectionStatus.Initialized,
                 StateMachine = StateMachineConstants.DraftState,
-                MovieId = MovieData.Movies[0]
-                    .Id,
+                MovieId = MovieData.Movies[0].Id,
                 DateTime = DateTime.Now,
                 HallId = Halls[0].Id,
                 PriceId = Prices[0].Id,
@@ -77,7 +76,7 @@ namespace eCInema.Test.Data
                 Status = ProjectionStatus.Initialized,
                 StateMachine = StateMachineConstants.HiddenState,
                 MovieId = MovieData.Movies[0].Id,
-                DateTime = new DateTime(2022, 29, 11, 16, 30, 00),
+                DateTime = new DateTime(2022, 11, 29, 10, 30, 01),
                 HallId = Halls[0].Id,
                 PriceId = Prices[0].Id,
                 ProjectionType = ProjectionTypes.EveningProjection,
@@ -89,7 +88,7 @@ namespace eCInema.Test.Data
             Status = ProjectionStatus.Initialized,
             StateMachine = StateMachineConstants.HiddenState,
             MovieId = MovieData.Movies[0].Id,
-            DateTime = new DateTime(2022, 29, 11, 16, 30, 00),
+            DateTime = new DateTime(2022, 11, 29, 10, 30, 01),
             HallId = Halls[0].Id,
             PriceId = Prices[0].Id,
             ProjectionType = ProjectionTypes.EveningProjection,

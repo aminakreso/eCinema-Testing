@@ -6,13 +6,14 @@
     using eCinema.Services.Profiles;
     using eCinema.Services.Services;
     using eCInema.Test.Data;
+    using Microsoft.EntityFrameworkCore;
 
-    public sealed class MoviesTests : IDisposable
+    public sealed class MoviesServiceTests : IDisposable
     {
         private readonly CinemaContext _databaseContextMock;
         private readonly MovieService _systemUnderTest;
 
-        public MoviesTests()
+        public MoviesServiceTests()
         {
             _databaseContextMock = InMemoryDatabaseFactory.CreateInMemoryDatabase();
 
@@ -130,24 +131,29 @@
     }
 
         [Fact]
-        public async Task AddMovie_Async()
+        public async Task InsertMovie_WhenCalled_InvalidName_ThrowsValidationException_Async()
         {
             // Arrange
-           var listofMovies = MovieData.Movies;
-           _databaseContextMock.Movies.AddRange(listofMovies);
-           await _databaseContextMock.SaveChangesAsync();
-
-            // Act
-           var newMovie = await _systemUnderTest.Insert(MovieData.movieInsertRequestValid);
+            var listofMovies = MovieData.Movies;
+            _databaseContextMock.Movies.AddRange(listofMovies);
+            await _databaseContextMock.SaveChangesAsync();
 
             // Assert
-           var expectedRecordCount = listofMovies.Count + 1;
-           Assert.Equal(_databaseContextMock.Movies.Count(), expectedRecordCount);
-           Assert.Equal(newMovie.Name, MovieData.movieInsertRequestValid.Name);
+            await Assert.ThrowsAsync<DbUpdateException>(() =>
+               _systemUnderTest.Insert(new eCinema.Model.Requests.MovieUpsertRequest
+               {
+                   // Name missing
+                   Duration = 140,
+                   ReleaseYear = 2021,
+                   Country = "USA",
+                   Actors = "Random Actor3",
+                   Director = "Random Director3",
+                   Genres = "Action",
+               }));
         }
 
         [Fact]
-        public async Task EditMovie_Async()
+        public async Task UpdateMovieAsync_WhenCalled_UpdateMovie()
         {
             // Arrange
             var listofMovies = MovieData.Movies;
@@ -169,12 +175,52 @@
             var updatedMovie = await _systemUnderTest.Update(listofMovies[0].Id, editMovie);
 
             // Assert
-            Assert.NotEqual(nameBeforeUpdate, updatedMovie.Name);
+            Assert.NotEqual(nameBeforeUpdate, listofMovies[0].Name);
             Assert.Equal(editMovie.Name, updatedMovie.Name);
         }
 
         [Fact]
-        public async Task AddMovie_MissingName_ThrowsValidationException_Async()
+        public async Task UpdateMovieAsync_WhenCalled_InvalidId_ThrowsException()
+        {
+            // Arrange
+            var listofMovies = MovieData.Movies;
+            _databaseContextMock.Movies.AddRange(listofMovies);
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Act
+            var editMovie = new eCinema.Model.Requests.MovieUpsertRequest()
+            {
+                Name = "TestRandom",
+                Duration = 140,
+                ReleaseYear = 2021,
+                Country = "USA",
+                Actors = "Random Actor3",
+                Director = "Random Director3",
+                Genres = "Action",
+            };
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+             _systemUnderTest.Update(Guid.NewGuid(), 
+                                     editMovie));
+        }
+
+        [Fact]
+        public async Task DeleteMovieAsync_WhenCalled_RemovesMovie()
+        {
+            // Arrange
+            var listofMovies = MovieData.Movies;
+            _databaseContextMock.Movies.AddRange(listofMovies);
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Act
+            await _systemUnderTest.Delete(listofMovies[0].Id);
+
+            // Assert
+            var expectedRecordCount = listofMovies.Count - 1;
+            Assert.Equal(_databaseContextMock.Movies.Count(), expectedRecordCount);
+        }
+
+        [Fact]
+        public async Task DeleteMovieAsync_WhenCalledWithInvalidMovieId_ThrowsException()
         {
             // Arrange
             var listofMovies = MovieData.Movies;
@@ -183,18 +229,8 @@
 
             // Assert
             await Assert.ThrowsAsync<Exception>(() =>
-               _systemUnderTest.Insert(new eCinema.Model.Requests.MovieUpsertRequest
-               {
-                   // Name missing
-                   Duration = 140,
-                   ReleaseYear = 2021,
-                   Country = "USA",
-                   Actors = "Random Actor3",
-                   Director = "Random Director3",
-                   Genres = "Action",
-               }));
+                _systemUnderTest.Delete(Guid.NewGuid()));
         }
-
         public void Dispose()
         {
         }

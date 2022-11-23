@@ -1,17 +1,9 @@
 ﻿using AutoMapper;
-using eCinema.Model.Dtos;
-using eCinema.Model.Requests;
 using eCinema.Model.SearchObjects;
 using eCinema.Services.Database;
 using eCinema.Services.Profiles;
 using eCinema.Services.Services;
 using eCInema.Test.Data;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace eCInema.Test.Services
 {
@@ -53,7 +45,7 @@ namespace eCInema.Test.Services
         }
 
         [Fact]
-        public async Task AddUserAsync_WhenCalled_AddsNewUser_ThrowsValidationException()
+        public async Task AddUserAsync_WhenCalled_ThrowsValidationException()
         {
             //Arrange
             var listOfUsers = UserData.Users;
@@ -67,7 +59,7 @@ namespace eCInema.Test.Services
         }
 
         [Fact]
-        public async Task AddUserUserAsync_WhenCalled_AddNewUser_ThrowsException_WrongConfirmPassword()
+        public async Task AddUserAsync_WhenCalled_ThrowsException_WrongConfirmPassword()
         {
             //Arrange
             var listOfUsers = UserData.Users;
@@ -81,7 +73,7 @@ namespace eCInema.Test.Services
         }
 
         [Fact]
-        public async Task EditUserUserAsync_WhenCalled_EditUser()
+        public async Task EditUserAsync_WhenCalled_EditUser()
         {
             //Arrange
             var listOfUsers = UserData.Users;
@@ -97,7 +89,7 @@ namespace eCInema.Test.Services
         }
 
         [Fact]
-        public async Task EditUserUserAsync_WhenCalled_EditUser_WrongId_ThrowException()
+        public async Task EditUseAsync_WhenCalled_WrongId_ThrowException()
         {
             //Arrange
             var listOfUsers = UserData.Users;
@@ -127,7 +119,7 @@ namespace eCInema.Test.Services
         }
 
         [Fact]
-        public async Task LoginUserAsync_WhenCalled_Login_ThrowsException()
+        public async Task LoginUserAsync_WhenCalled_ThrowsException()
         {
             //Arrange
             var listOfUsers = UserData.Users;
@@ -143,7 +135,7 @@ namespace eCInema.Test.Services
         }
 
         [Fact]
-        public async Task GetAllUsersAsync()
+        public async Task GetAllAsync_WhenCalledWithNoFilterParameters_ReturnsListOfAllUsers()
         {
             //Arrange
             var listOfUsers = UserData.Users;
@@ -161,7 +153,7 @@ namespace eCInema.Test.Services
         }
 
         [Fact]
-        public async Task GetAllUsers_Filter_Async()
+        public async Task GetAllAsync_WhenCalledFilterParameters_ReturnsUser()
         {
             //Arrange
             var listOfUsers = UserData.Users;
@@ -174,14 +166,14 @@ namespace eCInema.Test.Services
             // Assert
             var searchedUser = await _systemUnderTest.GetAll(new UserSearchObject()
             {
-                Name = newUser.FullName
+                Name = newUser.FirstName
             });
 
             Assert.Equal(searchedUser.FirstOrDefault().FullName, newUser.FullName);
         }
 
         [Fact]
-        public async Task GetAllUsers_Filter_ReturnsEmpty_Async()
+        public async Task GetAllAsync_WhenCalledFilterParameters_ReturnsEmpty()
         {
             //Arrange
             var listOfUsers = UserData.Users;
@@ -189,11 +181,17 @@ namespace eCInema.Test.Services
             _databaseContextMock.Roles.AddRange(UserData.Roles);
             await _databaseContextMock.SaveChangesAsync();
 
-            Assert.Equal(0,1);
+
+            var searchedUser = await _systemUnderTest.GetAll(new UserSearchObject()
+            {
+                Name = "InvalidName"
+            });
+            Assert.Equal(searchedUser.Count(), 0);
+
         }
 
         [Fact]
-        public async Task GetById_Async()
+        public async Task GetByIdAsync_WhenCalled_RetursUser()
         {
             //Arrange
             var listOfUsers = UserData.Users;
@@ -206,7 +204,7 @@ namespace eCInema.Test.Services
         }
 
         [Fact]
-        public async Task GetById_WrongId_Async()
+        public async Task GetByIdAsync_WhenCalled_RetursNull()
         {
             //Arrange
             var listOfUsers = UserData.Users;
@@ -214,8 +212,9 @@ namespace eCInema.Test.Services
             _databaseContextMock.Roles.AddRange(UserData.Roles);
             await _databaseContextMock.SaveChangesAsync();
 
-            var getUser = await _systemUnderTest.GetById(Guid.NewGuid());
-            Assert.Null(getUser);
+            //Assert
+            await Assert.ThrowsAsync<Exception>(() =>
+              _systemUnderTest.GetById(Guid.NewGuid()));
         }
 
         public void Dispose()

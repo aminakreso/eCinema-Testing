@@ -55,7 +55,8 @@ public class BaseProjectionState
         switch (stateName)
         {
             case StateMachineConstants.InitialState:
-                return _serviceProvider.GetService<InitialProjectionState>()!;
+                var a = _serviceProvider.GetService<InitialProjectionState>()!;
+                return a;
             case StateMachineConstants.DraftState:
                 return _serviceProvider.GetService<DraftProjectionState>()!;
             case StateMachineConstants.ActiveState:
