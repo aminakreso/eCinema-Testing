@@ -40,8 +40,9 @@ public sealed class NotificationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task GetAllAsync_WhenCalledWithTitle_ShouldReturnSpecificNotification()
+    public async Task GetAllAsync_WhenCalledWithTitle_ShouldReturnSpecificNotifications()
     {
+        // Arrange
         await _databaseContextMock.AddRangeAsync(NotificationData.Notifications);
 
         await _databaseContextMock.SaveChangesAsync();
@@ -49,16 +50,16 @@ public sealed class NotificationServiceTests : IDisposable
         var searchTitle = NotificationData.Notifications[0].Title;
 
         // Act
-        var client = await _systemUnderTest.GetAll(
+        var filteredNotifications = await _systemUnderTest.GetAll(
             new NotificationSearchObject()
             {
-                Title = searchTitle
+                Title = searchTitle,
             });
 
         // Assert
         Assert.Equal(
             _databaseContextMock.Notifications.Count(x => x.Title!.Contains(searchTitle!)),
-            client.Count());
+            filteredNotifications.Count());
     }
 
     [Fact]
@@ -70,7 +71,7 @@ public sealed class NotificationServiceTests : IDisposable
         await _databaseContextMock.SaveChangesAsync();
 
         // Act
-        var notifications = await _systemUnderTest
+        var filteredNotifications = await _systemUnderTest
             .GetAll(
                 new NotificationSearchObject()
                 {
@@ -78,7 +79,7 @@ public sealed class NotificationServiceTests : IDisposable
                 });
 
         // Assert
-        Assert.Empty(notifications);
+        Assert.Empty(filteredNotifications);
     }
 
     [Fact]
@@ -110,7 +111,7 @@ public sealed class NotificationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task InsertNotification_WhenCalled_AddsNewNotification()
+    public async Task InsertNotificationAsync_WhenCalled_AddsNewNotification()
     {
         // Arrange
         var listOfNotification = NotificationData.Notifications;
@@ -127,11 +128,10 @@ public sealed class NotificationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task InsertNotification_WhenCalledWithNoTitle_ThrowsException()
+    public async Task InsertNotificationAsync_WhenCalledWithNoTitle_ThrowsException()
     {
         // Arrange
-        var listOfNotification = NotificationData.Notifications;
-        _databaseContextMock.AddRange(listOfNotification);
+        _databaseContextMock.AddRange(NotificationData.Notifications);
 
         await _databaseContextMock.SaveChangesAsync();
 
@@ -141,7 +141,7 @@ public sealed class NotificationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task UpdateNotification_WhenCalled_ReturnsUpdatedNotification()
+    public async Task UpdateNotificationAsync_WhenCalled_ReturnsUpdatedNotification()
     {
         // Arrange
         var notification = NotificationData.Notifications[0];
@@ -160,7 +160,7 @@ public sealed class NotificationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task UpdateNotification_WhenCalledWithInvalidType_ThrowsException()
+    public async Task UpdateNotificationAsync_WhenCalledWithInvalidType_ThrowsException()
     {
         // Arrange
         _databaseContextMock.AddRange(NotificationData.Notifications);
@@ -172,7 +172,7 @@ public sealed class NotificationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteNotification_WhenCalled_RemovesNewNotification()
+    public async Task DeleteNotificationAsync_WhenCalled_RemovesNotification()
     {
         // Arrange
         var listOfNotification = NotificationData.Notifications;
@@ -189,7 +189,7 @@ public sealed class NotificationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteNotification_WhenCalledWithInvalidNotificationId_ThrowsException()
+    public async Task DeleteNotificationAsync_WhenCalledWithInvalidNotificationId_ThrowsException()
     {
         // Arrange
         _databaseContextMock.AddRange(NotificationData.Notifications);
