@@ -9,6 +9,8 @@ namespace eCinema.Model.Constants
     public static class ProjectionStatus
     {
         public const string All = "Svi";
+        
+        public const string Initialized = "Napravljena";
 
         public const string Scheduled = "Zakazana";
 
