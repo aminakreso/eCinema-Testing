@@ -1,4 +1,5 @@
 ﻿using eCinema.Model.Requests;
+using eCinema.Model.SearchObjects;
 using eCinema.Services.Database;
 using System;
 using System.Collections.Generic;
@@ -50,10 +51,48 @@ namespace eCInema.Test.Data
 
         };
 
-        public static readonly UserInsertRequest userInsertRequest = new UserInsertRequest()
+        public static readonly UserInsertRequest userInsertRequestValid = new UserInsertRequest()
         {
             Username = "UserName3",
             FirstName = "FirstName3",
+            LastName = "LastName3",
+            IsActive = true,
+            Email = "user@gmail.com",
+            PhoneNumber = "23426-2345",
+            RoleId = Roles[1].Id,
+            Password = "ysss",
+            ConfirmPassword = "ysss"
+        };
+
+        public static readonly UserInsertRequest userInsertRequestInvalidRole = new UserInsertRequest()
+        {
+            Username = "UserName3",
+            FirstName = "FirstName3",
+            LastName = "LastName3",
+            IsActive = true,
+            Email = "user@gmail.com",
+            PhoneNumber = "23426-2345",
+            RoleId = Guid.NewGuid(),
+            Password = "ysss",
+            ConfirmPassword = "ysss"
+        };
+
+        public static readonly UserInsertRequest userInsertRequestWrongConfirmPassword = new UserInsertRequest()
+        {
+            Username = "UserName3",
+            FirstName = "FirstName3",
+            LastName = "LastName3",
+            IsActive = true,
+            Email = "user@gmail.com",
+            PhoneNumber = "23426-2345",
+            RoleId = Guid.NewGuid(),
+            Password = "Password",
+            ConfirmPassword = "WorngConfirmPassword"
+        };
+
+        public static readonly UserUpdateRequest userUpdateRequestValid = new UserUpdateRequest()
+        {
+            FirstName = "UpdatedFirstName",
             LastName = "LastName3",
             IsActive = true,
             Email = "user@gmail.com",
