@@ -1,15 +1,6 @@
 ﻿using eCinema.Model.Constants;
 using eCinema.Model.Dtos;
 using eCinema.Model.Requests;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace eCinema.WinUI
 {
@@ -41,54 +32,8 @@ namespace eCinema.WinUI
                 cmbProjectionType.Text = _model?.ProjectionType;
                 dtpProjectionDateTime.Value = _model.DateTime.GetValueOrDefault(DateTime.Now);
             }
-            LoadButtons();
-
         }
-
-        private void LoadButtons()
-        {
-            if(_model?.StateMachine is null)
-            {
-                btnActivate.Visible = false;
-                btnHide.Visible = false;
-
-            }
-
-            if (_model?.StateMachine == StateMachineConstants.DraftState)
-            {
-                btnHide.Visible = false;
-            }
-
-            if (_model?.StateMachine == StateMachineConstants.ActiveState)
-            {
-                btnActivate.Visible = false;
-                btnSave.Visible = false;
-                cmbHall.Enabled = false;
-                cmbMovieName.Enabled = false;
-                cmbPrice.Enabled = false;
-                cmbProjectionType.Enabled = false;
-                dtpProjectionDateTime.Enabled = false;
-            }
-            //za soft delete neki x na vrhu??
-            if (_model?.StateMachine == StateMachineConstants.HiddenState)
-            {
-                btnHide.Visible = false;
-            }
-
-            if (_model?.StateMachine == StateMachineConstants.DeletedState)
-            {
-                btnActivate.Visible = false;
-                btnHide.Visible=false;
-                btnSave.Visible = false;
-                cmbHall.Enabled = false;
-                cmbMovieName.Enabled = false;
-                cmbPrice.Enabled = false;
-                cmbProjectionType.Enabled = false;
-                dtpProjectionDateTime.Enabled = false;
-            }
-
-        }
-
+        
         private ProjectionDto _model = null;
 
         private async Task LoadHalls()

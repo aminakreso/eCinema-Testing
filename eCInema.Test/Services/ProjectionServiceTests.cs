@@ -4,33 +4,23 @@
     using eCinema.Model.SearchObjects;
     using eCinema.Services.Database;
     using eCinema.Services.Profiles;
-    using eCinema.Services.ProjectionStateMachine;
     using eCinema.Services.Services;
     using eCInema.Test.Data;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.DependencyInjection;
-    using Moq;
 
     public sealed class ProjectionServiceTests : IDisposable
     {
         private readonly CinemaContext _databaseContextMock;
         private readonly ProjectionService _systemUnderTest;
-        private readonly IServiceProvider _serviceProvider;
-
 
         public ProjectionServiceTests()
         {
             _databaseContextMock = InMemoryDatabaseFactory.CreateInMemoryDatabase();
 
-            var serviceCollection = new ServiceCollection();
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-
             var config = new MapperConfiguration(cfg => cfg.AddProfile<UserProfile>());
 
             var mapper = new Mapper(config);
-            var baseProjectionState = new BaseProjectionState(mapper, serviceProvider, _databaseContextMock);
 
-            _systemUnderTest = new ProjectionService(_databaseContextMock, mapper, baseProjectionState);
+            _systemUnderTest = new ProjectionService(_databaseContextMock, mapper);
         }
 
         [Fact]
@@ -129,6 +119,74 @@
             _systemUnderTest.Insert(ProjectionData.ProjectionUpsertRequest);
             // Assert
             Assert.Equal(_databaseContextMock.Projections.Count(), ProjectionData.Projections.Count() + 1);
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_WhenCalled_ReturnsProjectionWithGivenId()
+        {
+            // Arrange
+            var projection = ProjectionData.Projections[0];
+            await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
+
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Act
+            var projectionById = await _systemUnderTest.GetById(projection.Id);
+
+            // Assert
+            Assert.Equal(projection.Id, projectionById.Id);
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_WhenCalledWithInvalidProjectionId_ThrowsException()
+        {
+            // Arrange
+            await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Assert
+            await Assert.ThrowsAsync<Exception>(() =>
+                _systemUnderTest.GetById(Guid.NewGuid()));
+        }
+
+        [Fact]
+        public async Task UpdateProjectionAsync_WhenCalled_InvalidId_ThrowsException()
+        {
+            // Arrange
+            await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _systemUnderTest.Update(Guid.NewGuid(),
+                    ProjectionData.ProjectionUpsertRequest));
+        }
+
+        [Fact]
+        public async Task SoftDeleteProjectionAsync_WhenCalled_RemovesProjection()
+        {
+            // Arrange
+            _databaseContextMock.AddRange(ProjectionData.Projections);
+
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Act
+            var softDeleteProjection = await _systemUnderTest.Delete(ProjectionData.Projections[0].Id);
+
+            // Assert
+            Assert.Equal(softDeleteProjection.IsActive, false);
+        }
+
+        [Fact]
+        public async Task DeleteProjectionAsync_WhenCalledWithInvalidProjectionId_ThrowsException()
+        {
+            // Arrange
+            await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+                _systemUnderTest.Delete(Guid.NewGuid()));
         }
 
         //[Fact]

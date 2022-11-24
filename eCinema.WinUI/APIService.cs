@@ -1,6 +1,5 @@
 ﻿using eCinema.Model.Extensions;
 using Flurl.Http;
-using Flurl;
 
 namespace eCinema.WinUI;
 

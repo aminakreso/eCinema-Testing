@@ -1,8 +1,5 @@
 using eCinema.Handlers;
-using eCinema.Model.Dtos;
-using eCinema.Model.SearchObjects;
 using eCinema.Services.Database;
-using eCinema.Services.ProjectionStateMachine;
 using eCinema.Services.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
@@ -46,12 +43,6 @@ builder.Services.AddTransient<IPriceService, PriceService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<IHallService, HallService>();
-
-builder.Services.AddTransient<BaseProjectionState>();
-builder.Services.AddTransient<InitialProjectionState>();
-builder.Services.AddTransient<DraftProjectionState>();
-builder.Services.AddTransient<ActiveProjectionState>(); 
-builder.Services.AddTransient<HiddenProjectionState>(); 
 
 builder.Services.AddAutoMapper(typeof(INotificationService));
 

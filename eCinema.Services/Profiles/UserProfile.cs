@@ -30,7 +30,6 @@ namespace eCinema.Services.Profiles
             CreateMap<Role, RoleDto>().ReverseMap();
 
             CreateMap<Hall, HallDto>().ReverseMap();
-
         }
     }
 }
