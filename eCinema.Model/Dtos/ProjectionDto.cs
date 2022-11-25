@@ -3,9 +3,10 @@
     public class ProjectionDto
     {
         public Guid Id { get; set; }
-
-        public DateTime? DateTime { get; set; }
-
+        
+        public DateTime? StartTime { get; set; }
+        
+        public DateTime? EndTime { get; set; }
         public Guid HallId { get; set; }
 
         public virtual HallDto Hall { get; set; }

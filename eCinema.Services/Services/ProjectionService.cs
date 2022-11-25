@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Security.Cryptography.X509Certificates;
+using AutoMapper;
 using eCinema.Model.Dtos;
 using eCinema.Model.Requests;
 using eCinema.Model.SearchObjects;
@@ -27,12 +28,25 @@ namespace eCinema.Services.Services
             if (search.HallId != Guid.Empty && search.HallId is not null)
                 filteredQuery = filteredQuery.Where(x => x.HallId! == search.HallId);
 
-            if (search.DateTime is not null)
-                filteredQuery = filteredQuery.Where(x => x.DateTime.Value == search.DateTime);
-
+            if (search.StartTime is not null)
+                filteredQuery = filteredQuery.Where(x => x.StartTime!.Value == search.StartTime);
 
             return filteredQuery;
 
+        }
+
+        public async override Task BeforeInsert(ProjectionUpsertRequest insert, Projection entity)
+        {
+            var flag =await ProjectionExist(Guid.Empty, insert);
+            if (flag)
+                throw new Exception("Not allowed!");
+        }
+        
+        public async override Task BeforeUpdate(ProjectionUpsertRequest update, Projection entity)
+        {
+            var flag =await ProjectionExist(entity.Id, update);
+            if (flag)
+                throw new InvalidOperationException("Not allowed!");
         }
 
         public override IQueryable<Projection> AddInclude(IQueryable<Projection> query, ProjectionSearchObject search)
@@ -54,6 +68,34 @@ namespace eCinema.Services.Services
             }
 
             return query;
+        }
+
+        public async Task<bool> ProjectionExist(Guid? id,ProjectionUpsertRequest projectionUpsertRequest)
+        {
+            if (id != Guid.Empty && await _cinemaContext.Projections.AnyAsync(x => x.Id == id) == false)
+            {
+                throw new Exception("Can't update unexisting projection!");
+            }
+            
+            return await _cinemaContext.Projections.Where(x=> x.HallId == projectionUpsertRequest.HallId)
+                .AnyAsync(x => ((projectionUpsertRequest.StartTime >= x.StartTime && projectionUpsertRequest.StartTime <= x.EndTime)
+                           || (projectionUpsertRequest.EndTime >= x.StartTime && projectionUpsertRequest.EndTime <= x.EndTime)
+                           || (projectionUpsertRequest.StartTime <= x.StartTime && projectionUpsertRequest.EndTime >= x.EndTime))
+                          && x.Id != id);
+        }
+
+        public override async Task<ProjectionDto> Delete(Guid id)
+        {
+            if (await CanDelete(id) == false)
+                throw new Exception("Can't delete started projection!");
+            return await base.Delete(id);
+        }
+
+        private async Task<bool> CanDelete(Guid id)
+        {
+            var projection = await GetById(id);
+
+            return !(projection.StartTime <= DateTime.Now) || !(projection.EndTime >= DateTime.Now);
         }
     }
 }

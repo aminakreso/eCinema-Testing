@@ -19,8 +19,7 @@ namespace eCinema.Services.Services
             var set = _cinemaContext.Set<TDb>();
 
             TDb entity = _mapper.Map<TDb>(insert);
-
-            BeforeInsert(insert,entity);
+            await BeforeInsert(insert,entity);
 
             await set.AddAsync(entity);
             IsActiveHelper<TDb>.SetIsActive(entity, true);
@@ -41,7 +40,7 @@ namespace eCinema.Services.Services
 
             _mapper.Map(update, entity);
 
-            BeforeUpdate(entity);
+            await BeforeUpdate(update,entity);
 
             await _cinemaContext.SaveChangesAsync();
 
@@ -65,12 +64,12 @@ namespace eCinema.Services.Services
             return await GetById(id);
         }
 
-        public virtual void BeforeInsert(TInsert insert, TDb entity)
+        public virtual async Task BeforeInsert(TInsert? insert = null, TDb? entity = null)
         {
 
         }
 
-        public virtual void BeforeUpdate(TDb entity)
+        public virtual async Task BeforeUpdate(TUpdate? update = null, TDb? entity=null)
         {
 
         }

@@ -31,7 +31,7 @@ namespace eCinema.Services.Services
 
         }
 
-        public override void BeforeInsert(NotificationInsertRequest insert,Notification entity)
+        public override async Task BeforeInsert(NotificationInsertRequest? insert, Notification? entity)
         {
             entity.AuthorId = new Guid("C25954C5-F3A1-408D-FDCD-08DAC04D3E13");
             entity.Date = DateTime.Now;
@@ -39,7 +39,7 @@ namespace eCinema.Services.Services
                 throw new Exception("Invalid title!");
         }
 
-        public override void BeforeUpdate(Notification entity)
+        public override async Task BeforeUpdate(NotificationUpdateRequest? update,Notification? entity)
         {
             entity.Date = DateTime.Now;
             if (string.IsNullOrWhiteSpace(entity.NotificationType) || !NotificationTypes.ListOfNotificationTypes.Contains(entity.NotificationType))

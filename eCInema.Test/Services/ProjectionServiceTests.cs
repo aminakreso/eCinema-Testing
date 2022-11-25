@@ -47,19 +47,19 @@
 
             await _databaseContextMock.SaveChangesAsync();
 
-            var dateTime = ProjectionData.Projections[2].DateTime;
+            var dateTime = ProjectionData.Projections[2].StartTime;
             var hall = ProjectionData.Projections[2].HallId;
 
             // Act
             var filteredProjections = await _systemUnderTest.GetAll(
                 new ProjectionSearchObject()
                 {
-                    DateTime = dateTime
+                    StartTime = dateTime
                 });
 
             // Assert
             Assert.Equal(
-                _databaseContextMock.Projections.Count(x => x.DateTime.Value == dateTime),
+                _databaseContextMock.Projections.Count(x => x.StartTime.Value == dateTime),
                 filteredProjections.Count());
         }
 
@@ -71,20 +71,20 @@
 
             await _databaseContextMock.SaveChangesAsync();
 
-            var dateTime = ProjectionData.Projections[2].DateTime;
+            var dateTime = ProjectionData.Projections[2].StartTime;
             var hall = ProjectionData.Projections[2].HallId;
 
             // Act
             var filteredProjections = await _systemUnderTest.GetAll(
                 new ProjectionSearchObject()
                 {
-                    DateTime = dateTime,
+                    StartTime = dateTime,
                     HallId = hall
                 });
 
             // Assert
             Assert.Equal(
-                _databaseContextMock.Projections.Count(x => x.DateTime.Value == dateTime && x.HallId == hall),
+                _databaseContextMock.Projections.Count(x => x.StartTime.Value == dateTime && x.HallId == hall),
                 filteredProjections.Count());
         }
 
@@ -100,7 +100,7 @@
             var filteredProjections = await _systemUnderTest.GetAll(
                 new ProjectionSearchObject()
                 {
-                    DateTime = DateTime.Now
+                    StartTime = DateTime.Now
                 });
 
             // Assert
@@ -166,7 +166,7 @@
         public async Task SoftDeleteProjectionAsync_WhenCalled_RemovesProjection()
         {
             // Arrange
-            _databaseContextMock.AddRange(ProjectionData.Projections);
+            await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
 
             await _databaseContextMock.SaveChangesAsync();
 
@@ -175,6 +175,18 @@
 
             // Assert
             Assert.Equal(softDeleteProjection.IsActive, false);
+        }
+
+        [Fact]
+        public async Task SoftDeleteProjectionAsync_WhenCalledWithStartedProjectionId_ThrowsException()
+        {
+            // Arrange
+            await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
+
+            await _databaseContextMock.SaveChangesAsync();
+
+            await Assert.ThrowsAsync<Exception>(() =>
+                _systemUnderTest.Delete(ProjectionData.Projections[3].Id));
         }
 
         [Fact]
@@ -188,6 +200,135 @@
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 _systemUnderTest.Delete(Guid.NewGuid()));
         }
+
+        [Fact]
+        public async Task ProjectionExistAsync_WhenCalledWithGuidEmpty_ReturnsFalse()
+        {
+            // Arrange
+            await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
+
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Act
+            var allowedProjection = await _systemUnderTest.ProjectionExist(
+                Guid.Empty, ProjectionData.ProjectionUpsertRequest);
+
+            // Assert
+            Assert.False(allowedProjection);
+        }
+
+        [Fact]
+        public async Task ProjectionExistAsync_WhenCalledWithOverlappingStartTimeAndGuidEmpty_ReturnsTrue()
+        {
+            // Arrange
+            await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
+
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Act
+            var allowedProjection = await _systemUnderTest.ProjectionExist(
+                Guid.Empty, ProjectionData.ProjectionUpsertRequestInvalidStartTime);
+
+            // Assert
+            Assert.True(allowedProjection);
+        }
+
+        [Fact]
+        public async Task ProjectionExistAsync_WhenCalledWithOverlappingEndTimeAndGuidEmpty_ReturnsTrue()
+        {
+            // Arrange
+            await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
+
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Act
+            var allowedProjection = await _systemUnderTest.ProjectionExist(
+                Guid.Empty, ProjectionData.ProjectionUpsertRequestInvalidEndTime);
+
+            // Assert
+            Assert.True(allowedProjection);
+        }
+
+        [Fact]
+        public async Task ProjectionExistAsync_WhenCalledWithOverlappingStartAndEndTimeAndGuidEmpty_ReturnsTrue()
+        {
+            // Arrange
+            await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
+
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Act
+            var allowedProjection = await _systemUnderTest.ProjectionExist(
+                Guid.Empty, ProjectionData.ProjectionUpsertRequestInvalidStartEndTime);
+
+            // Assert
+            Assert.True(allowedProjection);
+        }
+
+        [Fact]
+        public async Task ProjectionExistAsync_WhenCalledWithValidProjectionId_ReturnsFalse()
+        {
+            // Arrange
+            await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
+
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Act
+            var allowedProjection = await _systemUnderTest.ProjectionExist(
+                ProjectionData.Projections[0].Id, ProjectionData.ProjectionUpsertRequest);
+
+            // Assert
+            Assert.False(allowedProjection);
+        }
+
+        [Fact]
+        public async Task ProjectionExistAsync_WhenCalledWithInvalidProjectionId_ThrowsException()
+        {
+            // Arrange
+            await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
+
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Assert
+            await Assert.ThrowsAsync<Exception>(() =>
+                _systemUnderTest.ProjectionExist(
+                    Guid.NewGuid(), ProjectionData.ProjectionUpsertRequest));
+        }
+
+        // Test showing that we can update projection start and end time in range of his previous start and end time.
+        [Fact]
+        public async Task ProjectionExistAsync_WhenCalledWithOverlappingStartTimeAndValidProjectionId_ReturnsFalse()
+        {
+            // Arrange
+            await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
+
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Act
+            var allowedProjection = await _systemUnderTest.ProjectionExist(
+                ProjectionData.Projections[0].Id, ProjectionData.ProjectionUpsertRequestInvalidStartTime);
+
+            // Assert
+            Assert.False(allowedProjection);
+        }
+
+        // Test showing that we can't update projection start and end time in range of previous start and end time of other projections.
+        [Fact]
+        public async Task ProjectionExistAsync_WhenCalledWithOverlappingStartTimeAndValidProjectionId_ReturnsTrue()
+        {
+            // Arrange
+            await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
+
+            await _databaseContextMock.SaveChangesAsync();
+
+            // Act
+            var allowedProjection = await _systemUnderTest.ProjectionExist(
+                ProjectionData.Projections[2].Id, ProjectionData.ProjectionUpsertRequestInvalidStartTime);
+
+            // Assert
+            Assert.True(allowedProjection);
+        }
+
 
         //[Fact]
         //public async Task GetAllAsync_WhenCalledWithNonExistingParameters_ShouldReturnEmpty()

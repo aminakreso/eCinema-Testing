@@ -16,7 +16,7 @@ namespace eCinema.Services.Services
         {
         }
 
-        public override void BeforeInsert(UserInsertRequest insert, User entity)
+        public override async Task BeforeInsert(UserInsertRequest insert, User entity)
         {
             if (!CheckPassword(insert))
             {

@@ -2,12 +2,12 @@
 {
     public class ProjectionUpsertRequest
     {
-        public DateTime? DateTime { get; set; }
-
         public Guid? HallId { get; set; }
 
         public Guid? MovieId { get; set; }
-
+        public DateTime? StartTime { get; set; }
+        
+        public DateTime? EndTime { get; set; }
         public Guid? PriceId { get; set; }
 
         public string? ProjectionType { get; set; }

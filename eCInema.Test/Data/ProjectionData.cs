@@ -45,7 +45,8 @@ namespace eCInema.Test.Data
                 IsActive = true,
                 Status = ProjectionStatus.Initialized,
                 MovieId = MovieData.Movies[0].Id,
-                DateTime = DateTime.Now,
+                StartTime = new DateTime(2022, 11, 29, 10, 30, 01),
+                EndTime = new DateTime(2022, 11, 29, 12, 30, 01),
                 HallId = Halls[0].Id,
                 PriceId = Prices[0].Id,
                 ProjectionType = ProjectionTypes.EveningProjection,
@@ -56,7 +57,8 @@ namespace eCInema.Test.Data
                 Status = ProjectionStatus.Started,
                 MovieId = MovieData.Movies[1]
                     .Id,
-                DateTime = DateTime.Now,
+                StartTime = new DateTime(2022, 11, 30, 10, 30, 01),
+                EndTime = new DateTime(2022, 11, 30, 12, 30, 01),
                 HallId = Halls[1].Id,
                 PriceId = Prices[1].Id,
                 ProjectionType = ProjectionTypes.EveningProjection,
@@ -67,7 +69,20 @@ namespace eCInema.Test.Data
                 IsActive = true,
                 Status = ProjectionStatus.Initialized,
                 MovieId = MovieData.Movies[0].Id,
-                DateTime = new DateTime(2022, 11, 29, 10, 30, 01),
+                StartTime = new DateTime(2022, 12, 29, 10, 30, 01),
+                EndTime = new DateTime(2022, 12, 29, 12, 30, 01),
+                HallId = Halls[0].Id,
+                PriceId = Prices[0].Id,
+                ProjectionType = ProjectionTypes.EveningProjection,
+            },
+            new Projection
+            {
+                Id = Guid.NewGuid(),
+                IsActive = true,
+                Status = ProjectionStatus.Initialized,
+                MovieId = MovieData.Movies[0].Id,
+                StartTime = DateTime.Now,
+                EndTime = DateTime.Now.AddHours(2),
                 HallId = Halls[0].Id,
                 PriceId = Prices[0].Id,
                 ProjectionType = ProjectionTypes.EveningProjection,
@@ -78,7 +93,41 @@ namespace eCInema.Test.Data
         {
             Status = ProjectionStatus.Initialized,
             MovieId = MovieData.Movies[0].Id,
-            DateTime = new DateTime(2022, 11, 29, 10, 30, 01),
+            StartTime = new DateTime(2022, 12, 28, 10, 30, 01),
+            EndTime = new DateTime(2022, 12, 28, 12, 30, 01),
+            HallId = Halls[0].Id,
+            PriceId = Prices[0].Id,
+            ProjectionType = ProjectionTypes.EveningProjection,
+        };
+
+        public static readonly ProjectionUpsertRequest ProjectionUpsertRequestInvalidStartTime = new ProjectionUpsertRequest()
+        {
+            Status = ProjectionStatus.Initialized,
+            MovieId = MovieData.Movies[0].Id,
+            StartTime = new DateTime(2022, 11, 29, 11, 30, 01),
+            EndTime = new DateTime(2022, 11, 29, 13, 30, 01),
+            HallId = Halls[0].Id,
+            PriceId = Prices[0].Id,
+            ProjectionType = ProjectionTypes.EveningProjection,
+        };
+
+        public static readonly ProjectionUpsertRequest ProjectionUpsertRequestInvalidEndTime = new ProjectionUpsertRequest()
+        {
+            Status = ProjectionStatus.Initialized,
+            MovieId = MovieData.Movies[0].Id,
+            StartTime = new DateTime(2022, 11, 29, 8, 30, 01),
+            EndTime = new DateTime(2022, 11, 29, 11, 30, 01),
+            HallId = Halls[0].Id,
+            PriceId = Prices[0].Id,
+            ProjectionType = ProjectionTypes.EveningProjection,
+        };
+
+        public static readonly ProjectionUpsertRequest ProjectionUpsertRequestInvalidStartEndTime = new ProjectionUpsertRequest()
+        {
+            Status = ProjectionStatus.Initialized,
+            MovieId = MovieData.Movies[0].Id,
+            StartTime = new DateTime(2022, 11, 29, 9, 30, 01),
+            EndTime = new DateTime(2022, 11, 29, 13, 30, 01),
             HallId = Halls[0].Id,
             PriceId = Prices[0].Id,
             ProjectionType = ProjectionTypes.EveningProjection,
