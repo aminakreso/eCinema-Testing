@@ -197,7 +197,7 @@
             await _databaseContextMock.SaveChangesAsync();
 
             // Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<Exception>(() =>
                 _systemUnderTest.Delete(Guid.NewGuid()));
         }
 

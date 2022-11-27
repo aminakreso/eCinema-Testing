@@ -22,6 +22,10 @@ namespace eCinema.Services.Services
             {
                 throw new Exception("Password didn't match!");
             }
+
+            if (await _cinemaContext.Roles.AnyAsync(x => x.Id == insert.RoleId) == false)
+                throw new Exception("Role does not exist!");
+            
             var salt = GenerateSalt();
             entity.LozinkaSalt = salt;
             entity.LozinkaHash = GenerateHash(salt, insert.Password!);
