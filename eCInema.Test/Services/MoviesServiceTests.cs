@@ -127,7 +127,7 @@
 
         // Assert
         var expectedRecordCount = listOfMovies.Count + 1;
-        Assert.Equal(_databaseContextMock.Movies.Count(), expectedRecordCount);
+        Assert.Equal(expectedRecordCount, _databaseContextMock.Movies.Count());
     }
 
         [Fact]
@@ -199,8 +199,7 @@
                 Genres = "Action",
             };
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
-             _systemUnderTest.Update(Guid.NewGuid(), 
-                                     editMovie));
+             _systemUnderTest.Update(Guid.NewGuid(), editMovie));
         }
 
         [Fact]
@@ -215,8 +214,7 @@
             await _systemUnderTest.Delete(listofMovies[0].Id);
 
             // Assert
-            var expectedRecordCount = listofMovies.Count - 1;
-            Assert.Equal(_databaseContextMock.Movies.Count(), expectedRecordCount);
+            Assert.False(listofMovies[0].IsActive);
         }
 
         [Fact]
@@ -229,7 +227,7 @@
 
             // Assert
             await Assert.ThrowsAsync<Exception>(() =>
-                _systemUnderTest.Delete(Guid.NewGuid()));
+                 _systemUnderTest.Delete(Guid.NewGuid()));
         }
         public void Dispose()
         {

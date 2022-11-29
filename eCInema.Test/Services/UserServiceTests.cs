@@ -39,9 +39,8 @@ namespace eCInema.Test.Services
             var newUser = await _systemUnderTest.Insert(UserData.userInsertRequestValid);
 
             // Assert
-            var expectedRecordCount = listOfUsers.Count + 1;
-            Assert.Equal(_databaseContextMock.Users.Count(), expectedRecordCount);
-            Assert.Equal(newUser.Username, UserData.userInsertRequestValid.Username);
+            Assert.Equal(UserData.userInsertRequestValid.Username, newUser.Username);
+            Assert.True(_databaseContextMock.Users.Where(x => x.Username == UserData.userInsertRequestValid.Username).Any());
         }
 
         [Fact]
@@ -85,7 +84,7 @@ namespace eCInema.Test.Services
             var updatedUser = await _systemUnderTest.Update(newUser.Id, UserData.userUpdateRequestValid);
             // Assert
             Assert.NotEqual(newUser.FirstName, updatedUser.FirstName);
-            Assert.Equal(updatedUser.FirstName, UserData.userUpdateRequestValid.FirstName);
+            Assert.Equal(UserData.userUpdateRequestValid.FirstName, updatedUser.FirstName);
         }
 
         [Fact]
@@ -135,24 +134,6 @@ namespace eCInema.Test.Services
         }
 
         [Fact]
-        public async Task GetAllAsync_WhenCalledWithNoFilterParameters_ReturnsListOfAllUsers()
-        {
-            //Arrange
-            var listOfUsers = UserData.Users;
-            _databaseContextMock.Users.AddRange(listOfUsers);
-            _databaseContextMock.Roles.AddRange(UserData.Roles);
-            await _databaseContextMock.SaveChangesAsync();
-
-            // Assert
-            var allUsers = await _systemUnderTest.GetAll();
-            for (int i = 0; i < allUsers.Count(); i++)
-            {
-                Assert.Equal(listOfUsers[i].Username, allUsers.ToList()[i].Username);
-            }
-            Assert.Equal(allUsers.ToList().Count, listOfUsers.Count);
-        }
-
-        [Fact]
         public async Task GetAllAsync_WhenCalledFilterParameters_ReturnsUser()
         {
             //Arrange
@@ -169,11 +150,11 @@ namespace eCInema.Test.Services
                 Name = newUser.FirstName
             });
 
-            Assert.Equal(searchedUser.FirstOrDefault().FullName, newUser.FullName);
+            Assert.Equal(newUser.FullName, searchedUser.FirstOrDefault().FullName);
         }
 
         [Fact]
-        public async Task GetAllAsync_WhenCalledFilterParameters_ReturnsEmpty()
+        public async Task GetAllAsync_WhenCalledNonExcistingFilterParameters_ReturnsEmpty()
         {
             //Arrange
             var listOfUsers = UserData.Users;
@@ -186,7 +167,7 @@ namespace eCInema.Test.Services
             {
                 Name = "InvalidName"
             });
-            Assert.Equal(searchedUser.Count(), 0);
+            Assert.Equal(0, searchedUser.Count());
 
         }
 
@@ -200,7 +181,7 @@ namespace eCInema.Test.Services
             await _databaseContextMock.SaveChangesAsync();
 
             var getUser = await _systemUnderTest.GetById(listOfUsers[0].Id);
-            Assert.Equal(getUser.Username, listOfUsers[0].Username);
+            Assert.Equal(listOfUsers[0].Username, getUser.Username);
         }
 
         [Fact]
