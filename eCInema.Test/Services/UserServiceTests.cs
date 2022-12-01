@@ -29,7 +29,7 @@ namespace eCInema.Test.Services
         [Fact]
         public async Task AddUserAsync_WhenCalled_AddsNewUser()
         {
-            //Arrange
+            // Arrange
            var listOfUsers = UserData.Users;
             _databaseContextMock.Users.AddRange(listOfUsers);
             _databaseContextMock.Roles.AddRange(UserData.Roles);
@@ -43,6 +43,7 @@ namespace eCInema.Test.Services
             Assert.True(_databaseContextMock.Users.Where(x => x.Username == UserData.userInsertRequestValid.Username).Any());
         }
 
+        // Admir Numanović
         [Fact]
         public async Task AddUserAsync_WhenCalled_ThrowsValidationException()
         {

@@ -24,6 +24,7 @@
             _systemUnderTest = new MovieService(_databaseContextMock, mapper);
         }
 
+        // Amina Kreso
         [Fact]
         public async Task GetAllAsync_WhenCalledWithNoFilterParameters_ReturnsListOfAllMovies()
     {
@@ -130,6 +131,7 @@
         Assert.Equal(expectedRecordCount, _databaseContextMock.Movies.Count());
     }
 
+        // Admir Numanović
         [Fact]
         public async Task InsertMovie_WhenCalled_InvalidName_ThrowsValidationException_Async()
         {
@@ -229,6 +231,7 @@
             await Assert.ThrowsAsync<Exception>(() =>
                  _systemUnderTest.Delete(Guid.NewGuid()));
         }
+
         public void Dispose()
         {
         }

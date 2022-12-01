@@ -23,6 +23,7 @@
             _systemUnderTest = new ProjectionService(_databaseContextMock, mapper);
         }
 
+        // Admir Numanović
         [Fact]
         public async Task GetAllAsync_WhenCalledWithNoFilterParameters_ReturnsListOfAllProjections()
         {
@@ -121,6 +122,7 @@
             Assert.Equal(ProjectionData.Projections.Count() + 1, _databaseContextMock.Projections.Count());
         }
 
+        // Amina Kreso
         [Fact]
         public async Task GetByIdAsync_WhenCalled_ReturnsProjectionWithGivenId()
         {

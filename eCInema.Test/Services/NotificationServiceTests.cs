@@ -7,6 +7,7 @@ using eCinema.Services.Profiles;
 using eCinema.Services.Services;
 using eCInema.Test.Data;
 
+// Amina Kreso
 public sealed class NotificationServiceTests : IDisposable
 {
     private readonly CinemaContext _databaseContextMock;

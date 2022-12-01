@@ -7,6 +7,7 @@ using eCInema.Test.Data;
 
 namespace eCInema.Test.Services
 {
+    // Admir Numanović
     public sealed class GetAllUsersTest : IDisposable
     {
         private readonly CinemaContext _databaseContextMock;
