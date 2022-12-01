@@ -64,7 +64,7 @@ public sealed class NotificationServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task GetAllAsync_WhenCalledWithNonExistingType_ShouldReturnEmpty()
+    public async Task GetAllAsync_WhenCalledWithNonExistingTitle_ShouldReturnEmpty()
     {
         // Arrange
         await _databaseContextMock.AddRangeAsync(NotificationData.Notifications);

@@ -165,7 +165,7 @@
         }
 
         [Fact]
-        public async Task SoftDeleteProjectionAsync_WhenCalled_RemovesProjection()
+        public async Task SoftDeleteProjectionAsync_WhenCalled_SetIsActiveToFalse()
         {
             // Arrange
             await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
@@ -176,7 +176,7 @@
             var softDeleteProjection = await _systemUnderTest.Delete(ProjectionData.Projections[0].Id);
 
             // Assert
-            Assert.Equal(softDeleteProjection.IsActive, false);
+            Assert.False(softDeleteProjection.IsActive);
         }
 
         [Fact]
@@ -192,7 +192,7 @@
         }
 
         [Fact]
-        public async Task DeleteProjectionAsync_WhenCalledWithInvalidProjectionId_ThrowsException()
+        public async Task SoftDeleteProjectionAsync_WhenCalledWithInvalidProjectionId_ThrowsException()
         {
             // Arrange
             await _databaseContextMock.AddRangeAsync(ProjectionData.Projections);
@@ -314,7 +314,7 @@
             Assert.False(allowedProjection);
         }
 
-        // Test showing that we can't update projection start and end time in range of previous start and end time of other projections.
+        // Test showing that we can't update projection start and end time in range of start and end time of other projections.
         [Fact]
         public async Task ProjectionExistAsync_WhenCalledWithOverlappingStartTimeAndValidProjectionId_ReturnsTrue()
         {
